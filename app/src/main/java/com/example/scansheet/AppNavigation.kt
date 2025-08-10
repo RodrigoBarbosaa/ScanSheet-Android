@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.scansheet.upload.UploadScreen
 
 @Composable
 fun AppNavigation() {
@@ -24,7 +25,7 @@ fun AppNavigation() {
         }
 
         composable(route = "upload_step_screen") {
-            //UploadStepScreen(navController = navController)
+            UploadScreen(navController = navController)
         }
 
         composable(route = "export_results_screen") {

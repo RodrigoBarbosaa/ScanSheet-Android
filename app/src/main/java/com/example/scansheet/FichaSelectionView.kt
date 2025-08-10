@@ -34,12 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-/**
- * Tela para seleção do tipo de ficha a ser digitalizada.
- * Equivalente à FichaSelectionView do SwiftUI.
- *
- * @param navController Controlador de navegação para ir para a próxima tela.
- */
+
 @Composable
 fun FichaSelectionScreen(navController: NavController) {
     // Lista de opções de ficha
@@ -186,10 +181,6 @@ fun FichaSelectionScreen(navController: NavController) {
     }
 }
 
-/**
- * Cartão de opção para o seletor.
- * Equivalente ao PickerOptionCard do SwiftUI.
- */
 @Composable
 private fun PickerOptionCard(
     title: String,
@@ -253,10 +244,6 @@ private fun PickerOptionCard(
     }
 }
 
-
-/**
- * Preview para visualização no Android Studio.
- */
 @Preview(showBackground = true)
 @Composable
 fun FichaSelectionScreenPreview() {
