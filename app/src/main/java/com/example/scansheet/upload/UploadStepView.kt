@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,6 +42,7 @@ import coil.request.ImageRequest
 import com.example.scansheet.GridPattern
 import com.example.scansheet.darkBlue
 import com.example.scansheet.mediumBlue
+import com.example.scansheet.request.UploadResult
 
 // Cores do gradiente principal
 private val primaryGradient = listOf(
@@ -56,11 +59,21 @@ private val buttonGradient = listOf(
 @Composable
 fun UploadStepView(
     viewModel: UploadStepViewModel = viewModel(),
-    onPickerClick: (PickerTarget) -> Unit
+    onPickerClick: (PickerTarget) -> Unit,
+    onNavigateToResults: () -> Unit // Função de navegação para sucesso
 ) {
     val imageUriA by viewModel.imageUriA.collectAsState()
     val imageUriB by viewModel.imageUriB.collectAsState()
     val isReadyToUpload by viewModel.isReadyToUpload.collectAsState()
+    val uploadResult by viewModel.uploadResult.collectAsState()
+
+    uploadResult?.let { result ->
+        UploadStatusDialog(
+            result = result,
+            onDismiss = { viewModel.dismissUploadResult() },
+            onNavigate = onNavigateToResults
+        )
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -408,4 +421,91 @@ private fun ChoiceRow(text: String, icon: ImageVector, onClick: () -> Unit) {
         Icon(imageVector = icon, contentDescription = null)
         Text(text, style = MaterialTheme.typography.bodyLarge)
     }
+}
+
+@Composable
+fun UploadStatusDialog(
+    result: UploadResult,
+    onDismiss: () -> Unit,
+    onNavigate: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = {
+            // Impede o fechamento do diálogo de carregamento ao clicar fora
+            if (result !is UploadResult.Loading) {
+                onDismiss()
+            }
+        },
+        confirmButton = {
+            when (result) {
+                is UploadResult.Success -> {
+                    TextButton(onClick = onNavigate) {
+                        Text("Ver Resultados")
+                    }
+                }
+                is UploadResult.Failure -> {
+                    TextButton(onClick = onDismiss) {
+                        Text("Fechar")
+                    }
+                }
+                else -> {} // Sem botão no estado de carregamento
+            }
+        },
+        title = {
+            val titleText = when (result) {
+                is UploadResult.Loading -> "Enviando Imagens"
+                is UploadResult.Success -> "Sucesso!"
+                is UploadResult.Failure -> "Erro no Upload"
+            }
+            Text(text = titleText)
+        },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                when (result) {
+                    is UploadResult.Loading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(48.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "Aguarde, estamos processando a ficha...",
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    is UploadResult.Success -> {
+                        Icon(
+                            imageVector = Icons.Outlined.CheckCircle,
+                            contentDescription = "Sucesso",
+                            tint = Color(0xFF4CAF50), // Verde
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Text(
+                            text = "O arquivo foi processado e salvo com sucesso.",
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    is UploadResult.Failure -> {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = "Falha",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Text(
+                            text = result.message,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        },
+        // Estilização para combinar com a UI
+        containerColor = Color(0xFF2C3E50), // Um azul escuro
+        titleContentColor = Color.White,
+        textContentColor = Color.White.copy(alpha = 0.8f)
+    )
 }

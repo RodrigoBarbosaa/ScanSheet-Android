@@ -69,6 +69,9 @@ fun UploadScreen(navController: NavController) {
             viewModel = viewModel,
             onPickerClick = { target ->
                 activePickerTarget = target
+            },
+            onNavigateToResults = {
+                navController.navigate("export_results_screen")
             }
         )
     }

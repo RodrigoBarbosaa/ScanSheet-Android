@@ -137,7 +137,7 @@ fun HomeView(navController: NavController) {
             ActionCard(
                 icon = Icons.Default.Share,
                 title = "Share Sheets",
-                subtitle = "Export and collaborate easily",
+                subtitle = "Export and collaborate",
                 gradientColors = listOf(cardGreenGradientStart, cardMintGradientEnd),
                 action = { navController.navigate("export_results_screen") }
             )

@@ -1,5 +1,7 @@
 package com.example.scansheet
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 
 import androidx.navigation.NavController
@@ -8,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.scansheet.upload.UploadScreen
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun AppNavigation() {
     // Cria e lembra do NavController. Ele é o cérebro da navegação.
@@ -29,7 +32,7 @@ fun AppNavigation() {
         }
 
         composable(route = "export_results_screen") {
-            //ExportResultsScreen(navController = navController)
+            ExportResultsScreen(navController = navController)
         }
     }
 }
