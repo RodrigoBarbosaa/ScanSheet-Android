@@ -51,9 +51,9 @@ class Request(private val context: Context) {
         private const val TAG_SIZE_BITS = 128 // Tamanho da tag de autenticação
     }
 
-    suspend fun createUploadRequest(imageUris: List<Uri>): UploadResult {
+    suspend fun createUploadRequest(imageUris: List<Uri>, tag: String): UploadResult {
 
-        Log.d("DEBUG", "createUploadRequest: Chamado ")
+        Log.d("DEBUG", "createUploadRequest: Chamado, tag no request: $tag ")
         return withContext(Dispatchers.IO) {
             try {
                 // 1. Converter URIs de imagem para ByteArrays
@@ -74,7 +74,7 @@ class Request(private val context: Context) {
                 // 2. Criar o payload JSON inicial e codificar as imagens em Base64
                 val payloadMap = mapOf(
                     "image_bytes" to imageBytesList.map { Base64.encodeToString(it, Base64.NO_WRAP) },
-                    "title" to "outros"
+                    "title" to tag
                 )
 
                 // 3. Criptografar o payload

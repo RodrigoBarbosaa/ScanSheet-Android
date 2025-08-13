@@ -27,12 +27,14 @@ fun AppNavigation() {
             FichaSelectionScreen(navController = navController)
         }
 
-        composable(route = "upload_step_screen") {
-            UploadScreen(navController = navController)
+        composable(route = "upload_step_screen/{selectedFicha}") { backStackEntry ->
+            val selectedFicha = backStackEntry.arguments?.getString("selectedFicha") ?: "outros"
+            UploadScreen(navController = navController, selectedFicha = selectedFicha)
         }
 
         composable(route = "export_results_screen") {
             ExportResultsScreen(navController = navController)
+
         }
     }
 }

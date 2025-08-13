@@ -43,14 +43,14 @@ class UploadStepViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun createUploadRequest() {
+    fun createUploadRequest(tag: String) {
         if (!isReadyToUpload.value) return
 
         viewModelScope.launch {
             _uploadResult.value = UploadResult.Loading
 
             val uris = listOfNotNull(_imageUriA.value, _imageUriB.value)
-            _uploadResult.value = uploadService.createUploadRequest(uris)
+            _uploadResult.value = uploadService.createUploadRequest(uris, tag)
         }
     }
     fun dismissUploadResult() {

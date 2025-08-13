@@ -60,7 +60,8 @@ private val buttonGradient = listOf(
 fun UploadStepView(
     viewModel: UploadStepViewModel = viewModel(),
     onPickerClick: (PickerTarget) -> Unit,
-    onNavigateToResults: () -> Unit // Função de navegação para sucesso
+    onNavigateToResults: () -> Unit,
+    selectedFicha: String = "outros"
 ) {
     val imageUriA by viewModel.imageUriA.collectAsState()
     val imageUriB by viewModel.imageUriB.collectAsState()
@@ -178,20 +179,28 @@ fun UploadStepView(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    ImageUploadCard(
-                        title = "Imagem 1",
-                        imageUri = imageUriA,
-                        hasImage = imageUriA != null,
-                        action = { onPickerClick(PickerTarget.A) }
-                    )
-
-                    // Card para a segunda imagem
-                    ImageUploadCard(
-                        title = "Imagem 2",
-                        imageUri = imageUriB,
-                        hasImage = imageUriB != null,
-                        action = { onPickerClick(PickerTarget.B) }
-                    )
+                    if (selectedFicha == "outros") {
+                        ImageUploadCard(
+                            title = "Imagem 1",
+                            imageUri = imageUriA,
+                            hasImage = imageUriA != null,
+                            action = { onPickerClick(PickerTarget.A) }
+                        )
+                    } else {
+                        ImageUploadCard(
+                            title = "Imagem 1",
+                            imageUri = imageUriA,
+                            hasImage = imageUriA != null,
+                            action = { onPickerClick(PickerTarget.A) }
+                        )
+                        // Card para a segunda imagem
+                        ImageUploadCard(
+                            title = "Imagem 2",
+                            imageUri = imageUriB,
+                            hasImage = imageUriB != null,
+                            action = { onPickerClick(PickerTarget.B) }
+                        )
+                    }
                 }
             }
 
@@ -233,7 +242,7 @@ fun UploadStepView(
                         }
                     )
                     .clickable(enabled = isReadyToUpload) {
-                        viewModel.createUploadRequest()
+                        viewModel.createUploadRequest(selectedFicha)
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -429,9 +438,14 @@ fun UploadStatusDialog(
     onDismiss: () -> Unit,
     onNavigate: () -> Unit
 ) {
+    // Definindo a cor dos botões e do indicador
+    val buttonAndIndicatorColor = Color(0xFF1E88E5) // Removi o canal alpha 'CC' para ficar mais opaco
+
+    // Definindo a cor do container para um cinza azulado claro
+    val containerColor = Color(0xFFF0F4F8)
+
     AlertDialog(
         onDismissRequest = {
-            // Impede o fechamento do diálogo de carregamento ao clicar fora
             if (result !is UploadResult.Loading) {
                 onDismiss()
             }
@@ -440,15 +454,21 @@ fun UploadStatusDialog(
             when (result) {
                 is UploadResult.Success -> {
                     TextButton(onClick = onNavigate) {
-                        Text("Ver Resultados")
+                        Text(
+                            text = "Ver Resultados",
+                            color = buttonAndIndicatorColor // Aplica a nova cor
+                        )
                     }
                 }
                 is UploadResult.Failure -> {
                     TextButton(onClick = onDismiss) {
-                        Text("Fechar")
+                        Text(
+                            text = "Fechar",
+                            color = buttonAndIndicatorColor // Aplica a nova cor
+                        )
                     }
                 }
-                else -> {} // Sem botão no estado de carregamento
+                else -> {}
             }
         },
         title = {
@@ -469,7 +489,7 @@ fun UploadStatusDialog(
                     is UploadResult.Loading -> {
                         CircularProgressIndicator(
                             modifier = Modifier.size(48.dp),
-                            color = MaterialTheme.colorScheme.primary
+                            color = buttonAndIndicatorColor // Aplica a nova cor
                         )
                         Text(
                             text = "Aguarde, estamos processando a ficha...",
@@ -480,7 +500,7 @@ fun UploadStatusDialog(
                         Icon(
                             imageVector = Icons.Outlined.CheckCircle,
                             contentDescription = "Sucesso",
-                            tint = Color(0xFF4CAF50), // Verde
+                            tint = buttonAndIndicatorColor, // Use a mesma cor para o ícone
                             modifier = Modifier.size(48.dp)
                         )
                         Text(
@@ -492,7 +512,7 @@ fun UploadStatusDialog(
                         Icon(
                             imageVector = Icons.Outlined.Close,
                             contentDescription = "Falha",
-                            tint = MaterialTheme.colorScheme.error,
+                            tint = Color(0xFFE53935), // Um vermelho mais vibrante
                             modifier = Modifier.size(48.dp)
                         )
                         Text(
@@ -504,8 +524,8 @@ fun UploadStatusDialog(
             }
         },
         // Estilização para combinar com a UI
-        containerColor = Color(0xFF2C3E50), // Um azul escuro
-        titleContentColor = Color.White,
-        textContentColor = Color.White.copy(alpha = 0.8f)
+        containerColor = containerColor, // Aplica a nova cor de fundo
+        titleContentColor = Color.Black,
+        textContentColor = Color.Black.copy(alpha = 0.8f)
     )
 }

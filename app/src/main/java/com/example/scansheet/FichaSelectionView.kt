@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -137,7 +139,13 @@ fun FichaSelectionScreen(navController: NavController) {
             Button(
                 onClick = {
                     // Navega para a próxima tela ao clicar
-                    navController.navigate("upload_step_screen")
+                    val tag: String
+                    if (selectedFicha == "Cadastro individual SUS") {
+                        tag = "ficha_cadastro_individual"
+                    } else {
+                        tag = "outros"
+                    }
+                    navController.navigate("upload_step_screen/$tag")
                 },
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier

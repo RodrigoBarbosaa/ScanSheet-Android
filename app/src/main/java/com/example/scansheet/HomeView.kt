@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
@@ -128,7 +129,7 @@ fun HomeView(navController: NavController) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             ActionCard(
-                icon = Icons.Default.Call,
+                icon = Icons.Default.PlayArrow,
                 title = "Upload Spreadsheet",
                 subtitle = "Via Camera or Gallery",
                 gradientColors = listOf(cardBlueGradientStart, cardBlueGradientEnd),

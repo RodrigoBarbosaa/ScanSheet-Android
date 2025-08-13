@@ -15,7 +15,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun UploadScreen(navController: NavController) {
+fun UploadScreen(
+    navController: NavController,
+    selectedFicha: String = "outros"
+) {
 
     val viewModel: UploadStepViewModel = viewModel()
     var activePickerTarget by remember { mutableStateOf<PickerTarget?>(null) }
@@ -71,8 +74,13 @@ fun UploadScreen(navController: NavController) {
                 activePickerTarget = target
             },
             onNavigateToResults = {
-                navController.navigate("export_results_screen")
-            }
+                navController.navigate("export_results_screen") {
+                    popUpTo("home_screen") {
+                        inclusive = false
+                    }
+                }
+            },
+            selectedFicha = selectedFicha
         )
     }
 }
